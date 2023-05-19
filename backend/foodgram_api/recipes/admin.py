@@ -11,3 +11,5 @@ admin.site.register(TagRecipe)
 
 class TagAdmin(admin.ModelAdmin):
     list_display = ('title', 'slug', 'color', 'colored_name')
+
+

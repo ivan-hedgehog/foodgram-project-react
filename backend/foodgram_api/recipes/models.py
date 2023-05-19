@@ -7,11 +7,11 @@ User = get_user_model()
 
 
 class Ingredient(models.Model):
-    title = models.CharField(
+    name = models.CharField(
         max_length=256,
         verbose_name='Название ингредиента',
     )
-    units_measurement = models.CharField(
+    measurement_unit = models.CharField(
         max_length=50,
         verbose_name='Еденица измерения',
     )
@@ -19,14 +19,14 @@ class Ingredient(models.Model):
     class Meta:
         verbose_name = 'Ингредиент'
         verbose_name_plural = 'Ингредиенты'
-        ordering = ('title',)
+        ordering = ('name',)
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class Tag(models.Model):
-    title = models.CharField(
+    name = models.CharField(
         max_length=100,
         verbose_name='Название тега',
         unique=True,
@@ -52,24 +52,20 @@ class Tag(models.Model):
     class Meta:
         verbose_name = 'Тег'
         verbose_name_plural = 'Теги'
-        ordering = ('title',)
+        ordering = ('name',)
 
     def __str__(self):
         return self.title
 
 
 class Recipe(models.Model):
-    title = models.CharField(
+    name = models.CharField(
         max_length=256,
         db_index=True,
         verbose_name='Название',
     )
     text = models.TextField(
         verbose_name='Текстовое описание',
-    )
-    pub_date = models.DateTimeField(
-        'Дата публикации',
-        auto_now_add=True
     )
     author = models.ForeignKey(
         User,
@@ -98,12 +94,12 @@ class Recipe(models.Model):
     )
 
     class Meta:
-        ordering = ['-pub_date']
+        ordering = ['name']
         verbose_name = 'Рецепт'
         verbose_name_plural = 'Рецепты'
 
     def __str__(self):
-        return self.title
+        return self.name
 
 
 class IngredientRecipe(models.Model):
