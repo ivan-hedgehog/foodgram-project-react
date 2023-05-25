@@ -1,17 +1,20 @@
 import os
 from pathlib import Path
 
+from dotenv import load_dotenv
+
 BASE_DIR = Path(__file__).resolve().parent.parent
+load_dotenv(os.path.join(BASE_DIR.parent.parent, 'infra/.env'), verbose=True)
 
 
-SECRET_KEY = 'django-insecure-b@dno=31z!p$zu+9_@^!*hi*+e-r&xkv@n#5k!hy%b%aoknpy*'
-
+SECRET_KEY = os.getenv(
+    'SECRET_KEY',
+    default='secret_key_^##a1)ilz@4zqj=rq&agdol^##zgl9(vs',
+)
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
-
-# Application definition
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -21,8 +24,12 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'recipes.apps.RecipesConfig',
+    'users.apps.UsersConfig',
     'api.apps.ApiConfig',
     'rest_framework',
+    'django_filters',
+    'rest_framework.authtoken',
+    'djoser',
 ]
 
 MIDDLEWARE = [
@@ -56,29 +63,24 @@ TEMPLATES = [
 WSGI_APPLICATION = 'foodgram_api.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'foodgram_db',
-#         'USER': 'postgres',
-#         'PASSWORD': '1111',
-#         'HOST': 'localhost',
-#         'PORT': 5432,
-#     }
-# }
-
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME', default='postgres'),
+        'USER': os.getenv('POSTGRES_USER', default='postgres'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD', default='postgres'),
+        'HOST': os.getenv('DB_HOST', default='host'),
+        'PORT': os.getenv('DB_PORT', default='5432')
     }
 }
 
-# Password validation
-# https://docs.djangoproject.com/en/3.2/ref/settings/#auth-password-validators
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -96,8 +98,31 @@ AUTH_PASSWORD_VALIDATORS = [
 ]
 
 
-# Internationalization
-# https://docs.djangoproject.com/en/3.2/topics/i18n/
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+    ],
+
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 6,
+}
+
+DJOSER = {
+    'SERIALIZERS': {
+        'user': 'api.serializers.CustomUserSerializer',
+        'current_user': 'api.serializers.CustomUserSerializer',
+        'user_create': 'api.serializers.CustomUserCreateSerializer',
+    },
+    'PERMISSIONS': {
+        'user_list': ['rest_framework.permissions.AllowAny'],
+        'user': ['djoser.permissions.CurrentUserOrAdminOrReadOnly'],
+    },
+    'HIDE_USERS': False,
+    'LOGIN_FIELD': 'email',
+}
 
 LANGUAGE_CODE = 'ru-ru'
 
@@ -109,10 +134,14 @@ USE_L10N = True
 
 USE_TZ = True
 
-
+# STATIC_URL = '/static/'
+# STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+# CSV_FILES = os.path.join(BASE_DIR, 'static/data')
 STATIC_URL = '/static/'
-STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-CSV_FILES = os.path.join(BASE_DIR, 'static/data')
+AUTH_USER_MODEL = 'users.User'

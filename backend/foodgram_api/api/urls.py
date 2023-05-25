@@ -1,27 +1,22 @@
 from django.urls import include, path
-from .views import RecipeViewSet, IngredientViewSet, TagViewSet
-from rest_framework.routers import SimpleRouter
+from .views import (
+    UserViewSet,
+    RecipeViewSet,
+    IngredientViewSet,
+    TagViewSet,
+)
+from rest_framework.routers import DefaultRouter
 
 
-router_api = SimpleRouter()
-router_api.register(r'recipes', RecipeViewSet)
-router_api.register(r'ingredients', IngredientViewSet)
-router_api.register(r'tags', TagViewSet)
+router_api_v1 = DefaultRouter()
+router_api_v1.register('users', UserViewSet, basename='users')
+router_api_v1.register(r'recipes', RecipeViewSet)
+router_api_v1.register(r'ingredients', IngredientViewSet)
+router_api_v1.register(r'tags', TagViewSet)
+
 
 urlpatterns = [
-    path('', include(router_api.urls)),
+    path('', include(router_api_v1.urls)),
+    path('', include('djoser.urls')),
+    path('auth/', include('djoser.urls.authtoken')),
 ]
-
-
-# router_api_v1.register('posts', PostViewSet, basename='posts')
-# router_api_v1.register('groups', GroupViewSet, basename='groups')
-# router_api_v1.register(
-#     r'posts/(?P<post_id>\d+)/comments', CommentViewSet, basename='comments'
-# )
-
-# urlpatterns = [
-#     path('v1/', include(router_api_v1.urls)),
-#     path('v1/', include('djoser.urls')),
-#     path('v1/', include('djoser.urls.jwt')),
-#     path('v1/follow/', FollowList.as_view()),
-# ]
