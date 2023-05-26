@@ -1,3 +1,11 @@
+from api.common import add_del_obj_action
+from api.filters import IngredientFilter, RecipeAnonymousFilters, RecipeFilters
+from api.pagination import LimitPagination
+from api.permissions import AdminOrReadOnly, OwnerOrReadOnly
+from api.serializers import (FavoriteSerializer, IngredientSerializer,
+                             RecipeReadSerializer, RecipeSerializer,
+                             ShoppingCartSerializer, SubscribeSerializer,
+                             TagSerializer)
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import HttpResponse
@@ -10,14 +18,6 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import Follow
-from .common import add_del_obj_action
-from .filters import IngredientFilter, RecipeAnonymousFilters, RecipeFilters
-from .pagination import LimitPagination
-from .permissions import AdminOrReadOnly, OwnerOrReadOnly
-from .serializers import (FavoriteSerializer, IngredientSerializer,
-                          RecipeViewSerializer, ShoppingCartSerializer,
-                          SubscribeSerializer, TagSerializer,
-                          RecipeSerializer)
 
 User = get_user_model()
 
@@ -98,7 +98,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
-            return RecipeViewSerializer
+            return RecipeReadSerializer
         return RecipeSerializer
 
     def perform_create(self, serializer):

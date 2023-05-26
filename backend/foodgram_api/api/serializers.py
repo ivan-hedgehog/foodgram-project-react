@@ -1,3 +1,5 @@
+from api.common import create_update_instance_recipe, get_is_field_action
+from api.serializers_fields import Base64ImageField, TagListField
 from django.contrib.auth import get_user_model
 from djoser.serializers import UserCreateSerializer, UserSerializer
 from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
@@ -5,8 +7,6 @@ from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
 from rest_framework import serializers
 from rest_framework.validators import UniqueTogetherValidator
 from users.models import Follow
-from .common import create_update_instance_recipe, get_is_field_action
-from .serializers_fields import Base64ImageField, TagListField
 
 User = get_user_model()
 
@@ -65,24 +65,6 @@ class IngredientSerializer(serializers.ModelSerializer):
         fields = ('id', 'name', 'measurement_unit')
 
 
-# class IngredientInRecipeSerializer(serializers.ModelSerializer):
-#     id = serializers.PrimaryKeyRelatedField(
-#         queryset=Ingredient.objects.all()
-#     )
-#     amount = serializers.IntegerField()
-#
-#     class Meta:
-#         model = IngredientRecipe
-#         fields = ('id', 'amount')
-#
-#         def validate_amount(self, value):
-#             if int(value) < 1:
-#                 raise serializers.ValidationError(
-#                     'Количество ингредиента должно быть больше нуля!'
-#                 )
-#             return value
-
-
 class IngredientInRecipeSerializer(serializers.ModelSerializer):
     id = serializers.PrimaryKeyRelatedField(
         queryset=Ingredient.objects.all(),
@@ -106,7 +88,7 @@ class IngredientInRecipeSerializer(serializers.ModelSerializer):
         return value
 
 
-class RecipeViewSerializer(serializers.ModelSerializer):
+class RecipeReadSerializer(serializers.ModelSerializer):
     author = CustomUserSerializer(read_only=True)
     tags = TagSerializer(many=True, source='tag')
     ingredients = serializers.SerializerMethodField(
@@ -216,7 +198,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         return value
 
     def to_representation(self, instance):
-        return RecipeViewSerializer(
+        return RecipeReadSerializer(
             instance,
             context={'request': self.context.get('request')}
         ).data

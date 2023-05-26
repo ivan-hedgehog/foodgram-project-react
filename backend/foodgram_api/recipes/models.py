@@ -1,14 +1,7 @@
-from django.contrib import admin
-from django.db import models
-from django.contrib.auth import get_user_model
-from django.utils.html import format_html
-from django.contrib.auth.models import AbstractUser
-from django.core.exceptions import ValidationError
-from django.core.validators import MinValueValidator, RegexValidator
 from django.conf import settings
-
-
-User = get_user_model()
+from django.core.validators import RegexValidator
+from django.db import models
+from users.models import User
 
 
 class Ingredient(models.Model):
@@ -82,19 +75,18 @@ class Recipe(models.Model):
         null=True,
         default=None,
     )
-    ingredient = models.ManyToManyField(
+    ingredients = models.ManyToManyField(
         Ingredient,
         through='IngredientRecipe',
         verbose_name='Ингредиенты',
     )
-    tag = models.ManyToManyField(
+    tags = models.ManyToManyField(
         Tag,
         through='TagRecipe',
         verbose_name='Теги',
     )
-    cooking_time = models.SmallIntegerField(
+    cooking_time = models.PositiveSmallIntegerField(
         'Время приготовления (в минутах)',
-        validators=[MinValueValidator(1)],
     )
 
     class Meta:
@@ -219,6 +211,3 @@ class ShoppingCart(models.Model):
 
     def __str__(self):
         return f'{self.user} - {self.recipe}'
-
-
-
