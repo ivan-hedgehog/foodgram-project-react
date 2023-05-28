@@ -37,13 +37,12 @@ class RecipeFilters(RecipeAnonymousFilters):
         fields = RecipeAnonymousFilters.Meta.fields + ('author',)
 
     def get_filter_queryset(self, queryset, field_name, value):
-        user = self.request.user
         if not value:
             return queryset
         return queryset.filter(
-            id__in=user.favorites.values_list('recipe')
+            id__in=self.request.user.favorites.values_list('recipe')
             if field_name == 'favorites'
-            else user.shoppings.values_list('recipe')
+            else self.request.user.shoppings.values_list('recipe')
         )
 
 

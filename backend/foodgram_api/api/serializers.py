@@ -194,7 +194,14 @@ class RecipeSerializer(serializers.ModelSerializer):
                 'Для одного блюда указывать более одного'
                 'раза один и тот же ингредиент - недопустимо'
             )
+        return value
 
+    def validate_tags(self, value):
+        if value:
+            if len(value) != len(set(value)):
+                raise serializers.ValidationError(
+                    'Теги не должны повторятся в одном блюде'
+                )
         return value
 
     def to_representation(self, instance):
@@ -263,9 +270,6 @@ class SubscribeSerializer(serializers.ModelSerializer):
 
     def get_recipes_count(self, obj):
         return Recipe.objects.filter(author=obj.author).count()
-
-    def get_is_subscribed(self, obj):
-        return True
 
     def validate(self, data):
         if data['user'] == data['author']:

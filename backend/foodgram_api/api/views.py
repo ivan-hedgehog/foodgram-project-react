@@ -7,17 +7,17 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              ShoppingCartSerializer, SubscribeSerializer,
                              TagSerializer)
 from django.contrib.auth import get_user_model
-from django.db.models import Sum
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
-from recipes.models import (Favorite, Ingredient, IngredientRecipe, Recipe,
+from recipes.models import (Favorite, Ingredient, Recipe,
                             ShoppingCart, Tag)
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import Follow
+from api.shopping_cart import shopping_cart
 
 User = get_user_model()
 
@@ -133,24 +133,11 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     )
     def download_shopping_cart(self, request):
-        user = request.user
-        text = 'Cписок покупок: \n'
-
-        shopping_cart = IngredientRecipe.objects.filter(
-            recipe_id__in=user.shoppings.values_list('recipe_id', flat=True)
-        ).values_list(
-            'ingredient__name', 'ingredient__measurement_unit'
-        ).annotate(Sum('amount'))
-
-        for index, ingredient in enumerate(sorted(shopping_cart), start=1):
-            text += f'{index}. {ingredient[0].capitalize()} ' \
-                    f'({ingredient[1]}) - {ingredient[2]};\n'
-
-        response = HttpResponse(text, content_type='text/plain')
+        response = HttpResponse(shopping_cart(request.user),
+                                content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping-list.txt"'
         )
-
         return response
 
     @action(
