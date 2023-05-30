@@ -60,7 +60,7 @@ python manage.py runserver
 В папке **frontend** соберите образ docker `build -t YourDockerNickname/foodgram_frontend .`
 
 В папке **infra** создайте файл **.env** и заполните его данными. Пример:
-``` 
+```
 SECRET_KEY=YourSecretKeyFromDjangoProjectSettings
 DEBUG=True
 ALLOWED_HOSTS='*'
