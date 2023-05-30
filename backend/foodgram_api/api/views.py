@@ -6,7 +6,6 @@ from api.serializers import (FavoriteSerializer, IngredientSerializer,
                              RecipeReadSerializer, RecipeSerializer,
                              ShoppingCartSerializer, SubscribeSerializer,
                              TagSerializer)
-from django.contrib.auth import get_user_model
 from django.http import HttpResponse
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet
@@ -18,8 +17,6 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from users.models import Follow
 from api.shopping_cart import shopping_cart
-
-User = get_user_model()
 
 
 class CustomUserViewSet(UserViewSet):

@@ -74,13 +74,6 @@ DATABASES = {
     }
 }
 
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.sqlite3',
-#         'NAME': BASE_DIR / 'db.sqlite3',
-#     }
-# }
-
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -134,14 +127,13 @@ USE_L10N = True
 
 USE_TZ = True
 
-# STATIC_URL = '/static/'
-# STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
-# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-# CSV_FILES = os.path.join(BASE_DIR, 'static/data')
+
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 AUTH_USER_MODEL = 'users.User'
