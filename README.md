@@ -1,4 +1,4 @@
-# praktikum_new_diplom
+# praktikum_new_diplom 
 
 Проект foodgram  «Продуктовый помощник»: сайт,
 на котором пользователи будут публиковать рецепты,
