@@ -12,13 +12,13 @@ services:
       - ./.env
 
   frontend:
-    image: ezik163/infra_frontend
+    image: ezik163/infra_frontend:latest
     volumes:
       - ../frontend/:/app/result_build/
 
 
   backend:
-    image: ezik163/infra_backend
+    image: ezik163/infra_backend:latest
     volumes:
       - static_value:/app/static/
       - media_value:/app/media/
