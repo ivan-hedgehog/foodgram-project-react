@@ -130,7 +130,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
 
     )
     def download_shopping_cart(self, request):
-        response = HttpResponse(shopping_cart(request.user),
+        response = HttpResponse(shopping_cart(request),
                                 content_type='text/plain')
         response['Content-Disposition'] = (
             'attachment; filename="shopping-list.txt"'
