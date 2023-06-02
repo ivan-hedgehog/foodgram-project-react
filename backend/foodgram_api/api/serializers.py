@@ -278,6 +278,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
             )
         return data
 
+    def get_is_subscribed(self, obj):
+        request = self.context.get('request')
+        data = {
+            'author': obj.id
+        }
+        return get_is_field_action(request, Follow, data)
+
 
 class FavoriteShoppingCartSerializer(serializers.ModelSerializer):
     id = serializers.ReadOnlyField(source='recipe.id')
